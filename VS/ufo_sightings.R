@@ -31,6 +31,9 @@ library(scales)     # We'll need to fix date formats in plots
 # We also have to alter two defaults; first, we want the strings to not be converted to
 # factor types; and, this data has does not have header labels in the first row, so
 # we want to keep the first row as data.
+
+#RB - set up directory to load the data
+setwd("E:/VisualStudioRepos/ML_for_Hackers/01-Introduction")
 ufo <- read.delim(file.path("data", "ufo", "ufo_awesome.tsv"),
                   sep = "\t",
                   stringsAsFactors = FALSE,
