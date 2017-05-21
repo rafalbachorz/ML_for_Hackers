@@ -1,0 +1,15 @@
+---
+title: "Notes"
+output: html_document
+---
+## Note about dot in plyr world:
+
+There may be two things going on that are confusing you.
+One is the . function in the 'plyr' package. The . function allows you to use a variable as a link rather than referring to the value(s) the variable contains. For instance, in some functions, we want to refer to the object x rather than the value(s) stored in x. In the 'base' package, there is no easy, concise way of doing this, so we use the 'plyr' package to say .(x). The 'plyr' functions themselves use this a lot like so:
+```
+ddply(data, .(row_1), summarize, total=sum(row_1))
+```
+If we didn't use the . function, 'ddply' would complain, because 'row_1' contains many values, when we really just want to refer to the object.
+The other "." in action here is the way people use it as a character in the function arguments' names. I'm not sure what the origin is, but a lot of people seem to do it just to highlight which variables are function arguments and which variables are only part of the function's internal code. The "." is just another character, in this case.
+
+Source: http://stackoverflow.com/questions/14608844/what-is-purpose-of-dot-before-variables-i-e-variables-in-the-r-plyr-package

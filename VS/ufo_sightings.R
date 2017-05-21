@@ -25,8 +25,9 @@
 # Load libraries and data
 library(ggplot2)    # We'll use ggplot2 for all of our visualizations
 library(plyr)       # For data manipulation
-library(scales)     # We'll need to fix date formats in plots
-
+library(scales) # We'll need to fix date formats in plots
+library(rmarkdown)
+install.packages("rmarkdown")
 # This is a tab-delimited file, so we use 'read.delim' and set the separator as a tab character.
 # We also have to alter two defaults; first, we want the strings to not be converted to
 # factor types; and, this data has does not have header labels in the first row, so
@@ -51,6 +52,9 @@ names(ufo) <- c("DateOccurred", "DateReported",
                 "Location", "ShortDescription",
                 "Duration", "LongDescription")
 
+head(ufo)
+ufo$DateOccurred <- as.Date(ufo$DateOccurred, format = "%Y%m%d")
+ufo$DateReported <- as.Date(ufo$DateReported, format = "%Y%m%d")
 # To work with the dates, we will need to convert the YYYYMMDD string to an R Date
 # type using the 'strptime' function
 
@@ -64,11 +68,17 @@ good.rows <- ifelse(nchar(ufo$DateOccurred) != 8 |
                     FALSE,
                     TRUE)
 length(which(!good.rows))      # While 731 rows may seem like a lot, out of over 60K
-ufo <- ufo[good.rows, ]        # it is only about 0.6% of the total number of records.
+#ufo <- ufo[good.rows, ]        # it is only about 0.6% of the total number of records.
 
 # Now we can convert the strings to Date objects and work with them properly
-ufo$DateOccurred <- as.Date(ufo$DateOccurred, format = "%Y%m%d")
-ufo$DateReported <- as.Date(ufo$DateReported, format = "%Y%m%d")
+#ufo$DateOccurred <- as.Date(ufo$DateOccurred, format = "%Y%m%d")
+#ufo$DateReported <- as.Date(ufo$DateReported, format = "%Y%m%d")
+
+head(ufo)
+someRows <- ufo[1:5,]
+location <- "Richland, WA"
+split <- strsplit(location, ",")
+gsub("^ ","", split)
 
 # It will be useful to create separate columns for both town and state from the Location 
 # column.  To do so we will use the 'strsplit' function to perform the regex.
@@ -77,8 +87,7 @@ ufo$DateReported <- as.Date(ufo$DateReported, format = "%Y%m%d")
 # we remove the leading white-space from both the city and state strings with 'gsub'
 get.location <- function(l)
 {
-  split.location <- tryCatch(strsplit(l, ",")[[1]],
-                             error = function(e) return(c(NA, NA)))
+  split.location <- tryCatch(strsplit(l, ",")[[1]], error = function(e) return(c(NA, NA)))
   clean.location <- gsub("^ ","",split.location)
   if (length(clean.location) > 2)
   {
@@ -103,6 +112,11 @@ ufo <- transform(ufo,
                  USState = location.matrix[, 2],
                  stringsAsFactors = FALSE)
 
+head(ufo)
+someRows <- ufo[1:10,]
+
+someRows[someRows$USState == "IA"]
+
 # Next step, we will strip out non-US incidents
 
 # Insert NA's where there are non-US cities
@@ -119,10 +133,15 @@ head(ufo.us)
 # The summary functions shows us that the data actually go back a very long time (1440!).  So, 
 # we will want to take a quick look at the date to see where the majority of the data exists.
 # We can do this by creating a histogram of frequencies for UFO sightings over time
+
+library(scales)
 quick.hist <- ggplot(ufo.us, aes(x = DateOccurred)) +
-  geom_histogram() + 
-  scale_x_date(breaks = "50 years")
-  
+  geom_histogram() +
+  scale_x_date(breaks = date_breaks("100 years"))
+
+
+ggplot(ufo.us, aes(x = DateOccurred)) + geom_histogram() + scale_x_date(breaks = date_breaks("100 years"))
+
 ggsave(plot = quick.hist,
        filename = file.path("images", "quick_hist.pdf"),
        height = 6,
@@ -134,10 +153,11 @@ ufo.us <- subset(ufo.us, DateOccurred >= as.Date("1990-01-01"))
 
 # Let's look at the histogram now
 new.hist <- ggplot(ufo.us, aes(x = DateOccurred)) +
-  geom_histogram(aes(fill='white', color='red')) +
-  scale_fill_manual(values=c('white'='white'), guide="none") +
-  scale_color_manual(values=c('red'='red'), guide="none") +
-  scale_x_date(breaks = "50 years")
+  geom_histogram(aes(fill = 'white', color = 'red')) +
+  scale_fill_manual(values = c('white' = 'white'), guide = "none") +
+  scale_color_manual(values = c('red' = 'red'), guide = "none") +
+  scale_x_date(breaks = date_breaks("2 years")) +
+  theme_dark()
 
 ggsave(plot = new.hist,
        filename = file.path("images", "new_hist.pdf"),
@@ -202,12 +222,12 @@ all.sightings$State <- as.factor(all.sightings$State)
 # (5) xlab() and ylab() set axis labels.
 # (6) opts() sets a title for the plot
 
-state.plot <- ggplot(all.sightings, aes(x = YearMonth,y = Sightings)) +
+state.plot <- ggplot(all.sightings, aes(x = YearMonth, y = Sightings)) +
   geom_line(aes(color = "darkblue")) +
-  facet_wrap(~State, nrow = 10, ncol = 5) + 
-  theme_bw() + 
+  facet_wrap(~State, nrow = 10, ncol = 5) +
+  theme_bw() +
   scale_color_manual(values = c("darkblue" = "darkblue"), guide = "none") +
-  scale_x_date(breaks = "5 years", labels = date_format('%Y')) +
+  scale_x_date(breaks = date_breaks("5 years"), labels = date_format('%Y')) +
   xlab("Years") +
   ylab("Number of Sightings") +
   ggtitle("Number of UFO sightings by Month-Year and U.S. State (1990-2010)")
