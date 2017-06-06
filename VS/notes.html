@@ -127,6 +127,15 @@ $(document).ready(function () {
 <p>If we didn’t use the . function, ‘ddply’ would complain, because ‘row_1’ contains many values, when we really just want to refer to the object. The other “.” in action here is the way people use it as a character in the function arguments’ names. I’m not sure what the origin is, but a lot of people seem to do it just to highlight which variables are function arguments and which variables are only part of the function’s internal code. The “.” is just another character, in this case.</p>
 <p>Source: <a href="http://stackoverflow.com/questions/14608844/what-is-purpose-of-dot-before-variables-i-e-variables-in-the-r-plyr-package" class="uri">http://stackoverflow.com/questions/14608844/what-is-purpose-of-dot-before-variables-i-e-variables-in-the-r-plyr-package</a></p>
 </div>
+<div id="check-if-data-is-numericfactorcharacter" class="section level2">
+<h2>Check if data is numeric/factor/character</h2>
+<pre><code>str(heights.weights)</code></pre>
+<p>Output:</p>
+<pre><code>'data.frame':   10000 obs. of  3 variables:
+ $ Gender: chr  &quot;Mężczyzna&quot; &quot;Mężczyzna&quot; &quot;Mężczyzna&quot; &quot;Mężczyzna&quot; ...
+ $ Height: num  188 175 188 182 177 ...
+ $ Weight: num  109.8 73.7 96.6 99.9 93.7 ...</code></pre>
+</div>
 
 
 

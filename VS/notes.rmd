@@ -13,3 +13,16 @@ If we didn't use the . function, 'ddply' would complain, because 'row_1' contain
 The other "." in action here is the way people use it as a character in the function arguments' names. I'm not sure what the origin is, but a lot of people seem to do it just to highlight which variables are function arguments and which variables are only part of the function's internal code. The "." is just another character, in this case.
 
 Source: http://stackoverflow.com/questions/14608844/what-is-purpose-of-dot-before-variables-i-e-variables-in-the-r-plyr-package
+
+## Check if data is numeric/factor/character
+
+```
+str(heights.weights)
+```
+Output:
+```
+'data.frame':	10000 obs. of  3 variables:
+ $ Gender: chr  "Mê¿czyzna" "Mê¿czyzna" "Mê¿czyzna" "Mê¿czyzna" ...
+ $ Height: num  188 175 188 182 177 ...
+ $ Weight: num  109.8 73.7 96.6 99.9 93.7 ...
+```

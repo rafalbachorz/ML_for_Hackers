@@ -27,7 +27,7 @@ library(ggplot2)    # We'll use ggplot2 for all of our visualizations
 library(plyr)       # For data manipulation
 library(scales) # We'll need to fix date formats in plots
 library(rmarkdown)
-install.packages("rmarkdown")
+#install.packages("rmarkdown")
 # This is a tab-delimited file, so we use 'read.delim' and set the separator as a tab character.
 # We also have to alter two defaults; first, we want the strings to not be converted to
 # factor types; and, this data has does not have header labels in the first row, so
